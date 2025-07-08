@@ -1,26 +1,30 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\OpportunityTypeController;
-use App\Http\Controllers\CompensationTypeController;
-use App\Http\Controllers\TitleController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\CohortController;
-use App\Http\Controllers\OpportunityController;
-use App\Http\Controllers\DocumentController;
-// routes/web.php
-
-Route::middleware(['auth'])->group(function () {
-    Route::resource('opportunity-types', OpportunityTypeController::class);
-    Route::resource('compensation-types', CompensationTypeController::class);
-    Route::resource('titles', TitleController::class);
-    Route::resource('departments', DepartmentController::class);
-    Route::resource('cohorts', CohortController::class);
-    Route::resource('opportunities', OpportunityController::class);
-    Route::resource('documents', DocumentController::class);
-    
-    // Special routes for pivot table operations
-    Route::post('opportunities/{opportunity}/users/{user}/attach', [OpportunityController::class, 'attachUser'])->name('opportunities.attach-user');
-    Route::delete('opportunities/{opportunity}/users/{user}/detach', [OpportunityController::class, 'detachUser'])->name('opportunities.detach-user');
+// Root URL with GET method (welcome page)
+Route::get('/', function () {
+    return view('welcome');
 });
+
+// Dashboard route (protected by auth)
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+// Profile routes (protected by auth)
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Add POST handler for root URL if needed
+    Route::post('/', function () {
+        // Handle POST request logic here
+        return redirect('/dashboard'); // Example redirect
+    });
+});
+
+// Authentication routes (login, register, password reset, etc.)
+require __DIR__.'/auth.php';

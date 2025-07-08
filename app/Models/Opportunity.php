@@ -1,44 +1,36 @@
 <?php
-// app/Models/Opportunity.php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Opportunity extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'title', 'department', 'opportunity_type', 'opportunity_description',
-        'core_competencies', 'compensation_type', 'compensation_currency',
-        'compensation_amount', 'expiry_date', 'is_active', 'created_by'
+        'title',
+        'department',
+        'opportunity_type',
+        'compensation_type',
+        'compensation_amount',
+        'compensation_currency',
+        'expiry_date',
+        'opportunity_description',
+        'core_competencies',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'compensation_amount' => 'float',
         'expiry_date' => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'compensation_amount' => 'decimal:2',
     ];
 
-    public function users()
+    public function getFormattedAmountAttribute()
     {
-        return $this->belongsToMany(User::class, 'opportunity_user')
-                    ->withPivot('is_active')
-                    ->withTimestamps();
-    }
-
-    public function departmentRelation()
-    {
-        return $this->belongsTo(Department::class, 'department', 'name');
-    }
-
-    public function opportunityTypeRelation()
-    {
-        return $this->belongsTo(OpportunityType::class, 'opportunity_type', 'type');
-    }
-
-    public function compensationTypeRelation()
-    {
-        return $this->belongsTo(CompensationType::class, 'compensation_type', 'type');
+        if ($this->compensation_amount > 0) {
+            return 'KES ' . number_format($this->compensation_amount, 0, '.', ',');
+        }
+        return $this->compensation_type;
     }
 }
