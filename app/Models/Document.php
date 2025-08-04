@@ -1,25 +1,38 @@
 <?php
-// app/Models/Document.php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'user_id', 'name', 'description', 'file_path', 'file_name',
-        'file_extension', 'file_size_in_kilobytes', 'is_active', 'created_by'
+        'application_id',
+        'document_type', // resume, cover_letter, transcript, certificate, other
+        'file_name',
+        'file_path',
+        'file_size',
+        'mime_type',
+        'is_active',
+        'created_by',
     ];
 
     protected $casts = [
+        'file_size' => 'integer',
         'is_active' => 'boolean',
-        'file_size_in_kilobytes' => 'float',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
-    public function user()
+    // Relationships
+    public function application()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Application::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

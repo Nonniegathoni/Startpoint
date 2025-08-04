@@ -6,8 +6,8 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('opportunity_user', function (Blueprint $table) {
             $table->id(); // Diagram shows an id, so we add it.
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('opportunity_id')->constrained('opportunities')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('opportunity_id');
             $table->boolean('is_active')->default(true);
             // No timestamps needed for a simple pivot table like this.
         });

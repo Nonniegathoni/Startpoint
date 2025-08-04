@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->string('cohort', 150)->nullable();
             $table->string('email_address', 200)->unique();
             $table->string('password');
+            $table->enum('user_type', ['admin', 'applicant', 'supervisor', 'hr_officer'])->default('applicant');
+            $table->unsignedBigInteger('department_id')->nullable();
             $table->boolean('is_active')->default(true);
             $table->string('created_by', 200)->nullable();
             $table->rememberToken();

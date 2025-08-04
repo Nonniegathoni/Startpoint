@@ -15,10 +15,10 @@ return new class extends Migration {
             $table->boolean('is_active')->default(true);
             $table->string('created_by', 200)->nullable();
 
-            // Foreign keys should point to the id of other tables.
-            $table->foreignId('department_id')->constrained('departments');
-            $table->foreignId('opportunity_type_id')->constrained('opportunity_types');
-            $table->foreignId('compensation_type_id')->constrained('compensation_types');
+            // Foreign keys will be added in a separate migration
+            $table->unsignedBigInteger('department_id');
+            $table->unsignedBigInteger('opportunity_type_id');
+            $table->unsignedBigInteger('compensation_type_id');
 
             $table->timestamps();
         });
