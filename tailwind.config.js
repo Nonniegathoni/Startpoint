@@ -9,10 +9,21 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    darkMode: 'class', // Enable dark mode via class
+
     theme: {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                gradient4a: '#DED1C6',
+                gradient4b: '#A77693',
+                gradient4c: '#174871',
+                gradient4d: '#0F2D4D',
+            },
+            backgroundImage: {
+                'gradient-4': 'linear-gradient(135deg, #DED1C6 0%, #A77693 40%, #174871 80%, #0F2D4D 100%)',
             },
         },
     },
