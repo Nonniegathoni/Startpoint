@@ -66,7 +66,7 @@ class Opportunity extends Model
         if ($this->compensation_amount > 0) {
             return $this->compensation_currency . ' ' . number_format($this->compensation_amount, 0, '.', ',');
         }
-        return $this->compensationType->name ?? 'Unpaid';
+        return $this->compensationType->type ?? 'Unpaid';
     }
 
     public function getStatusAttribute()

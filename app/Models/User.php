@@ -12,17 +12,19 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'title',
+        'title_id',
         'first_name',
         'middle_name',
         'last_name',
         'phone_number',
-        'cohort',
+        'cohort_id',
         'email_address',
         'password',
         'is_active',
         'user_type', // admin, applicant, supervisor, hr_officer
         'department_id',
+        'date_of_birth',
+        'bio',
         'created_by',
     ];
 
@@ -36,6 +38,7 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'date_of_birth' => 'date',
         ];
     }
 
@@ -53,6 +56,16 @@ class User extends Authenticatable
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function title()
+    {
+        return $this->belongsTo(Title::class);
+    }
+
+    public function cohort()
+    {
+        return $this->belongsTo(Cohort::class);
     }
 
     public function applications()
@@ -104,5 +117,16 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         return trim($this->first_name . ' ' . $this->middle_name . ' ' . $this->last_name);
+    }
+
+    // Accessor for email (to maintain compatibility)
+    public function getEmailAttribute()
+    {
+        return $this->email_address;
+    }
+
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email_address'] = $value;
     }
 }

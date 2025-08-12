@@ -1,3 +1,240 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom CSS for Startpoint System */
+
+/* Base styles */
+body {
+    font-family: 'Figtree', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(102, 111, 109, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(102, 111, 109, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 111, 109, 0.5);
+}
+
+/* Custom focus styles */
+.focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(246, 177, 122, 0.3);
+}
+
+/* Glassmorphism effects */
+.glass {
+    background: rgba(66, 71, 105, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(102, 111, 109, 0.2);
+}
+
+.glass-light {
+    background: rgba(102, 111, 109, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(102, 111, 109, 0.1);
+}
+
+/* Enhanced glow effects */
+.glow-effect {
+    position: relative;
+}
+
+.glow-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(45deg, #f6b17a, #676f6d);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.glow-effect:hover::before {
+    opacity: 1;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Animation classes */
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.animate-pulse-slow {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Status badge styles */
+.status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.status-badge.pending {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.status-badge.shortlisted {
+    @apply bg-blue-100 text-blue-800;
+}
+
+.status-badge.approved {
+    @apply bg-green-100 text-green-800;
+}
+
+.status-badge.rejected {
+    @apply bg-red-100 text-red-800;
+}
+
+.status-badge.active {
+    @apply bg-green-100 text-green-800;
+}
+
+.status-badge.inactive {
+    @apply bg-gray-100 text-gray-800;
+}
+
+/* Form input enhancements */
+.form-input {
+    @apply bg-light-blue/10 border-light-blue/20 text-white placeholder-light-blue focus:border-accent focus:ring-accent rounded-xl transition-all duration-300;
+}
+
+.form-input:focus {
+    @apply shadow-glow-orange;
+}
+
+/* Button enhancements */
+.btn-primary {
+    @apply bg-gradient-to-r from-accent to-orange-corrected text-white font-semibold rounded-xl hover:from-accent/80 hover:to-orange-corrected/80 transition-all duration-300 shadow-glow-orange transform hover:scale-105;
+}
+
+.btn-secondary {
+    @apply bg-gradient-to-r from-medium-blue-purple to-dark-blue-purple text-white font-semibold rounded-xl hover:from-medium-blue-purple/80 hover:to-dark-blue-purple/80 transition-all duration-300 shadow-glow;
+}
+
+.btn-outline {
+    @apply bg-light-blue/10 text-white font-medium rounded-xl hover:bg-light-blue/20 transition-all duration-300 border border-light-blue/20;
+}
+
+/* Card enhancements */
+.card {
+    @apply bg-primary/60 backdrop-blur-md rounded-2xl border border-light-blue/20 shadow-glow transition-all duration-300;
+}
+
+.card:hover {
+    @apply shadow-glow-strong;
+}
+
+/* Navigation enhancements */
+.nav-link {
+    @apply flex items-center px-3 py-2 text-white rounded-xl hover:bg-light-blue/20 transition-colors duration-200;
+}
+
+.nav-link.active {
+    @apply bg-light-blue/30 text-accent shadow-glow;
+}
+
+/* Sidebar enhancements */
+.sidebar {
+    @apply fixed inset-y-0 left-0 z-50 w-64 bg-primary/80 backdrop-blur-md border-r border-light-blue/20 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 shadow-glow;
+}
+
+/* Header enhancements */
+.header {
+    @apply bg-primary/80 backdrop-blur-md border-b border-light-blue/20 shadow-glow;
+}
+
+/* Utility classes */
+.text-gradient {
+    background: linear-gradient(135deg, #f6b17a, #676f6d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #2d3250 0%, #424769 50%, #676f6d 100%);
+}
+
+.bg-gradient-accent {
+    background: linear-gradient(135deg, #f6b17a 0%, #676f6d 100%);
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+    .mobile-hidden {
+        display: none;
+    }
+    
+    .mobile-full {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .desktop-hidden {
+        display: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-break {
+        page-break-before: always;
+    }
+}

@@ -1,94 +1,181 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Apply for Internship') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <!-- Opportunity Details -->
-                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $opportunity->title }}</h3>
-                        <p class="text-gray-600 mb-2">{{ $opportunity->department->name }}</p>
-                        <p class="text-gray-600 mb-2">Compensation: {{ $opportunity->formatted_amount }}</p>
-                        <p class="text-gray-600">Expires: {{ $opportunity->expiry_date->format('M d, Y') }}</p>
-                    </div>
+@section('content')
+@php
+    $header = 'Submit Application';
+@endphp
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="bg-primary/60 backdrop-blur-md rounded-2xl border border-light-blue/20 p-6 shadow-glow">
+        <h1 class="text-3xl font-bold text-white mb-2">Submit Your Application</h1>
+        <p class="text-light-blue">
+            Complete the form below to apply for this internship opportunity
+        </p>
+    </div>
 
-                    <form method="POST" action="{{ route('applications.store', $opportunity) }}" enctype="multipart/form-data">
-                        @csrf
+    <!-- Application Form -->
+    <div class="bg-primary/60 backdrop-blur-md rounded-2xl border border-light-blue/20 p-6 shadow-glow">
+        <form method="POST" action="{{ route('applications.store') }}" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            
+            <!-- Opportunity Selection -->
+            <div>
+                <label for="opportunity_id" class="block text-sm font-medium text-white mb-2">Select Opportunity</label>
+                <select name="opportunity_id" id="opportunity_id" required 
+                        class="w-full bg-light-blue/10 border-light-blue/20 text-white focus:border-accent focus:ring-accent rounded-xl">
+                    <option value="">Choose an opportunity...</option>
+                    @foreach(\App\Models\Opportunity::where('is_active', true)->get() as $opportunity)
+                        <option value="{{ $opportunity->id }}" {{ request('opportunity') == $opportunity->id ? 'selected' : '' }}>
+                            {{ $opportunity->title }} - {{ $opportunity->department->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('opportunity_id')
+                    <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
 
-                        <!-- Cover Letter -->
-                        <div class="mb-6">
-                            <x-input-label for="cover_letter" :value="__('Cover Letter')" />
-                            <textarea
-                                id="cover_letter"
-                                name="cover_letter"
-                                rows="6"
-                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                placeholder="Please describe why you are interested in this opportunity and what makes you a good candidate..."
-                                required
-                            >{{ old('cover_letter') }}</textarea>
-                            <x-input-error :messages="$errors->get('cover_letter')" class="mt-2" />
-                        </div>
+            <!-- Cover Letter -->
+            <div>
+                <label for="cover_letter" class="block text-sm font-medium text-white mb-2">Cover Letter</label>
+                <textarea name="cover_letter" id="cover_letter" rows="6" required
+                          class="w-full bg-light-blue/10 border-light-blue/20 text-white placeholder-light-blue focus:border-accent focus:ring-accent rounded-xl"
+                          placeholder="Tell us why you're interested in this opportunity and what makes you a great candidate..."></textarea>
+                @error('cover_letter')
+                    <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
 
-                        <!-- Resume -->
-                        <div class="mb-6">
-                            <x-input-label for="resume" :value="__('Resume/CV')" />
-                            <input
-                                type="file"
-                                id="resume"
-                                name="resume"
-                                accept=".pdf,.doc,.docx"
-                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                required
-                            />
-                            <p class="mt-1 text-sm text-gray-500">Accepted formats: PDF, DOC, DOCX (Max: 2MB)</p>
-                            <x-input-error :messages="$errors->get('resume')" class="mt-2" />
-                        </div>
+            <!-- Expected Start Date -->
+            <div>
+                <label for="expected_start_date" class="block text-sm font-medium text-white mb-2">Expected Start Date</label>
+                <input type="date" name="expected_start_date" id="expected_start_date" required
+                       min="{{ date('Y-m-d') }}"
+                       class="w-full bg-light-blue/10 border-light-blue/20 text-white focus:border-accent focus:ring-accent rounded-xl">
+                @error('expected_start_date')
+                    <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
 
-                        <!-- Additional Documents -->
-                        <div class="mb-6">
-                            <x-input-label for="documents" :value="__('Additional Documents (Optional)')" />
-                            <input
-                                type="file"
-                                id="documents"
-                                name="documents[]"
-                                multiple
-                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                            />
-                            <p class="mt-1 text-sm text-gray-500">You can upload multiple documents: transcripts, certificates, etc. (Max: 2MB each)</p>
-                            <x-input-error :messages="$errors->get('documents.*')" class="mt-2" />
-                        </div>
+            <!-- Expected End Date -->
+            <div>
+                <label for="expected_end_date" class="block text-sm font-medium text-white mb-2">Expected End Date</label>
+                <input type="date" name="expected_end_date" id="expected_end_date" required
+                       min="{{ date('Y-m-d', strtotime('+1 month')) }}"
+                       class="w-full bg-light-blue/10 border-light-blue/20 text-white focus:border-accent focus:ring-accent rounded-xl">
+                @error('expected_end_date')
+                    <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
 
-                        <!-- Additional Notes -->
-                        <div class="mb-6">
-                            <x-input-label for="additional_notes" :value="__('Additional Notes (Optional)')" />
-                            <textarea
-                                id="additional_notes"
-                                name="additional_notes"
-                                rows="3"
-                                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                placeholder="Any additional information you'd like to share..."
-                            >{{ old('additional_notes') }}</textarea>
-                            <x-input-error :messages="$errors->get('additional_notes')" class="mt-2" />
-                        </div>
+            <!-- Document Uploads -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-white">Required Documents</h3>
+                
+                <!-- CV/Resume -->
+                <div>
+                    <label for="cv" class="block text-sm font-medium text-white mb-2">
+                        CV/Resume <span class="text-red-400">*</span>
+                    </label>
+                    <input type="file" name="cv" id="cv" accept=".pdf,.doc,.docx" required
+                           class="w-full bg-light-blue/10 border-light-blue/20 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-accent file:text-white hover:file:bg-accent/80 rounded-xl">
+                    <p class="mt-1 text-xs text-light-blue">Accepted formats: PDF, DOC, DOCX (Max: 5MB)</p>
+                    @error('cv')
+                        <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                        <!-- Submit Button -->
-                        <div class="flex items-center justify-end mt-6">
-                            <x-secondary-button type="button" onclick="window.history.back()" class="mr-3">
-                                {{ __('Cancel') }}
-                            </x-secondary-button>
-                            <x-primary-button>
-                                {{ __('Submit Application') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
+                <!-- Academic Transcript -->
+                <div>
+                    <label for="transcript" class="block text-sm font-medium text-white mb-2">
+                        Academic Transcript <span class="text-red-400">*</span>
+                    </label>
+                    <input type="file" name="transcript" id="transcript" accept=".pdf,.doc,.docx" required
+                           class="w-full bg-light-blue/10 border-light-blue/20 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-accent file:text-white hover:file:bg-accent/80 rounded-xl">
+                    <p class="mt-1 text-xs text-light-blue">Accepted formats: PDF, DOC, DOCX (Max: 5MB)</p>
+                    @error('transcript')
+                        <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Recommendation Letter -->
+                <div>
+                    <label for="recommendation" class="block text-sm font-medium text-white mb-2">
+                        Recommendation Letter <span class="text-red-400">*</span>
+                    </label>
+                    <input type="file" name="recommendation" id="recommendation" accept=".pdf,.doc,.docx" required
+                           class="w-full bg-light-blue/10 border-light-blue/20 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-accent file:text-white hover:file:bg-accent/80 rounded-xl">
+                    <p class="mt-1 text-xs text-light-blue">Accepted formats: PDF, DOC, DOCX (Max: 5MB)</p>
+                    @error('recommendation')
+                        <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Additional Documents -->
+                <div>
+                    <label for="additional_docs" class="block text-sm font-medium text-white mb-2">
+                        Additional Documents (Optional)
+                    </label>
+                    <input type="file" name="additional_docs[]" id="additional_docs" accept=".pdf,.doc,.docx" multiple
+                           class="w-full bg-light-blue/10 border-light-blue/20 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-medium-blue-purple file:text-white hover:file:bg-medium-blue-purple/80 rounded-xl">
+                    <p class="mt-1 text-xs text-light-blue">You can upload multiple additional documents if needed</p>
+                    @error('additional_docs')
+                        <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
-        </div>
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-between pt-6 border-t border-light-blue/20">
+                <a href="{{ route('opportunities.index') }}" 
+                   class="px-6 py-3 bg-light-blue/10 text-white font-medium rounded-xl hover:bg-light-blue/20 transition-all duration-300">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="px-8 py-3 bg-gradient-to-r from-accent to-orange-corrected text-white font-semibold rounded-xl hover:from-accent/80 hover:to-orange-corrected/80 transition-all duration-300 transform hover:scale-105 shadow-glow-orange">
+                    Submit Application
+                </button>
+            </div>
+        </form>
     </div>
-</x-app-layout> 
+</div>
+
+<script>
+    // Client-side validation for dates
+    document.addEventListener('DOMContentLoaded', function() {
+        const startDateInput = document.getElementById('expected_start_date');
+        const endDateInput = document.getElementById('expected_end_date');
+        
+        // Set minimum start date to today
+        const today = new Date().toISOString().split('T')[0];
+        startDateInput.min = today;
+        
+        // Update end date minimum when start date changes
+        startDateInput.addEventListener('change', function() {
+            if (this.value) {
+                const startDate = new Date(this.value);
+                const minEndDate = new Date(startDate);
+                minEndDate.setMonth(minEndDate.getMonth() + 1); // At least 1 month later
+                endDateInput.min = minEndDate.toISOString().split('T')[0];
+            }
+        });
+        
+        // File size validation
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const files = this.files;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const fileSize = file.size / 1024 / 1024; // Convert to MB
+                    if (fileSize > 5) {
+                        alert(`File "${file.name}" is too large. Maximum size is 5MB.`);
+                        this.value = '';
+                        return;
+                    }
+                }
+            });
+        });
+    });
+</script>
+@endsection 
