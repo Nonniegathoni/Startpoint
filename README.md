@@ -35,4 +35,26 @@ git clone https://github.com/Nonniegathoni/Startpoint.git
 cd Startpoint
 npm install
 # or: pnpm install
-Author: Nonnie Gathoni✍🏾
+
+Environment Variables
+Create a .env:
+# App
+APP_URL=http://localhost:3000
+NODE_ENV=development
+# Auth
+AUTH_SECRET=your-secret
+# Database
+DATABASE_URL=postgresql://user:pass@host:5432/dbname
+# Optional
+STORAGE_BUCKET=...
+NOTIFICATIONS_PROVIDER_API_KEY=...
+
+Run
+npm run dev
+# Build
+npm run build
+# Start
+npm start
+
+Author
+Nonnie Gathoni✍🏾
